@@ -1,49 +1,351 @@
-<!DOCTYPE html>
-<html lang="en">
+innerHTML<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber Digits INC - Coming Soon</title>
+    <title>Cyber Digits INC: Interactive Pitch</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            background-color: #0a0a0a;
-            color: #e0e0e0;
-            font-family: 'Courier New', Courier, monospace;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            text-align: center;
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
         }
-        .container {
-            border: 1px solid #00ffff;
-            padding: 2rem 4rem;
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
         }
-        h1 {
-            color: #ffd700;
-            font-size: 2.5rem;
-            margin: 0;
-            letter-spacing: 0.1em;
+        .section-fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
         }
-        p {
-            font-size: 1rem;
-            letter-spacing: 0.05em;
+        .section-fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
-        .footer-credit {
-            font-size: 0.8rem;
-            color: #64748b;
-            margin-top: 2rem;
+        .neon-text-cyan {
+            text-shadow: 0 0 5px rgba(6, 182, 212, 0.7), 0 0 10px rgba(6, 182, 212, 0.5);
+        }
+        .neon-text-pink {
+            text-shadow: 0 0 5px rgba(219, 39, 119, 0.7), 0 0 10px rgba(219, 39, 119, 0.5);
+        }
+        .neon-border-cyan {
+            box-shadow: 0 0 8px rgba(6, 182, 212, 0.6), inset 0 0 8px rgba(6, 182, 212, 0.5);
+        }
+        .tab-active {
+            background-color: #06b6d4;
+            color: #ffffff;
+            font-weight: 700;
+        }
+        .spinner {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #06b6d4;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1>CYBER DIGITS INC</h1>
-        <p>"Connecting You to the Future."</p>
-        <p class="footer-credit">A project by Julianne & Dimitris Sawyer.<br>Architected in partnership with Cyber Jewels.</p>
+<body class="bg-slate-50 text-slate-800">
+<!-- Chosen Palette: Neon on Light Concrete -->
+<!-- Application Structure Plan: A single-page, vertically scrolling application that functions as an interactive pitch deck. The structure is thematic, guiding the user from the high-level vision (Manifesto) to specific offerings (The Arsenal), target markets (Sectors), and creative concepts (Billboard Gallery). A sticky navigation bar allows for both linear and random access. This structure was chosen to translate a narrative pitch into an explorable brand story, making the content digestible and engaging through progressive reveal animations and interactive components like tabs and a modal gallery. -->
+<!-- Visualization & Content Choices: 
+- Report Info: Core Pitch -> Goal: Inspire -> Viz/Method: Animated text blocks on scroll -> Interaction: Scroll-driven -> Justification: Creates a dynamic narrative experience. -> Library/Method: Vanilla JS Intersection Observer.
+- Report Info: Products/Services -> Goal: Organize/Inform -> Viz/Method: Tabbed interface -> Interaction: Click -> Justification: Cleanly separates distinct service categories in a compact space. -> Library/Method: Vanilla JS.
+- Report Info: Target Audiences -> Goal: Compare -> Viz/Method: Two-column layout with icons -> Interaction: Static -> Justification: Provides a clear, at-a-glance comparison. -> Library/Method: Tailwind CSS.
+- Report Info: Billboard Concepts -> Goal: Explore -> Viz/Method: Interactive card gallery with modal pop-ups -> Interaction: Click -> Justification: Allows users to dive deeper into the creative concepts, making it the primary interactive exhibit. -> Library/Method: Vanilla JS.
+- Report Info: Billboard Concepts -> Goal: Demonstrate AI -> Viz/Method: AI Headline Generator -> Interaction: Click (API call) -> Justification: Provides a live, engaging demonstration of the company's AI capabilities within the pitch itself. -> Library/Method: Vanilla JS Fetch API to Gemini.
+- No quantitative data exists in the report, so no charts (Chart.js) are necessary. All visuals are created with HTML and styled with Tailwind CSS. -->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <div id="app-container" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <header id="app-header" class="fixed top-0 left-0 right-0 bg-slate-50/80 backdrop-blur-sm z-40 border-b border-slate-200">
+            <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex items-center">
+                        <span class="font-orbitron text-xl font-bold text-cyan-600 neon-text-cyan">Cyber Digits INC</span>
+                    </div>
+                    <div class="hidden md:block">
+                        <div class="ml-10 flex items-baseline space-x-4">
+                            <a href="#manifesto" class="text-slate-600 hover:text-cyan-500 px-3 py-2 rounded-md text-sm font-medium transition-colors">The Manifesto</a>
+                            <a href="#arsenal" class="text-slate-600 hover:text-cyan-500 px-3 py-2 rounded-md text-sm font-medium transition-colors">The Arsenal</a>
+                            <a href="#sectors" class="text-slate-600 hover:text-cyan-500 px-3 py-2 rounded-md text-sm font-medium transition-colors">Sectors</a>
+                            <a href="#gallery" class="text-slate-600 hover:text-cyan-500 px-3 py-2 rounded-md text-sm font-medium transition-colors">Gallery</a>
+                            <a href="#ethos" class="text-slate-600 hover:text-cyan-500 px-3 py-2 rounded-md text-sm font-medium transition-colors">Our Ethos</a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <main class="pt-24">
+
+            <!-- Section 1: Hero -->
+            <section id="hero" class="text-center py-20 lg:py-32">
+                <h1 class="font-orbitron text-4xl md:text-6xl font-bold tracking-tight text-slate-900">
+                    We aren't just connecting you to the future.
+                </h1>
+                <h2 class="font-orbitron text-4xl md:text-6xl font-bold tracking-tight text-cyan-500 neon-text-cyan mt-2">
+                    We're arming you for it.
+                </h2>
+                <p class="mt-6 max-w-2xl mx-auto text-lg text-slate-600">
+                    Welcome to Cyber Digits INC. Discover how we're building the new frontier of digital sovereignty.
+                </p>
+            </section>
+
+            <!-- Section 2: The Manifesto -->
+            <section id="manifesto" class="py-12 lg:py-20 space-y-8 max-w-3xl mx-auto section-fade-in">
+                <h2 class="font-orbitron text-3xl font-bold text-center text-slate-900">The Manifesto</h2>
+                <p class="text-lg text-slate-700">"They say the future is already here – it's just not evenly distributed. They talk about connection, but what about control? In a world woven from light and shadow, where data streams are the new lifelines and digital phantoms prey on the unwary, <strong>Cyber Digits INC</strong> isn't just 'Connecting You to the Future'... we're arming you for it."</p>
+                <p class="text-lg text-slate-700">"We are Dimitris & Julianne Sawyer, and we've seen the underbelly of the net, the vulnerabilities in the chrome. That's why Cyber Digits INC was forged. We're not just another tech company; we are the <span class="text-pink-600 font-bold neon-text-pink">architects of your digital sovereignty.</span>"</p>
+                <p class="text-lg text-slate-700">"The digital world is a sprawling, chaotic, beautiful, and dangerous metropolis. Others offer you a map. Cyber Digits INC offers you the vehicle, the armor, and the arsenal to not just navigate it, but to thrive in it, to <em>own</em> your corner of it."</p>
+            </section>
+
+            <!-- Section 3: The Arsenal -->
+            <section id="arsenal" class="py-12 lg:py-20 section-fade-in">
+                <h2 class="font-orbitron text-3xl font-bold text-center text-slate-900 mb-2">The Arsenal</h2>
+                <p class="text-center text-slate-600 mb-12">Our divisions are engineered to provide complete digital dominance.</p>
+                <div class="max-w-4xl mx-auto">
+                    <div class="mb-4 flex justify-center border border-slate-300 rounded-lg p-1 bg-slate-200">
+                        <button class="arsenal-tab tab-active flex-1 py-2 px-4 rounded-md transition-colors" data-tab="sentinel">The Sentinel</button>
+                        <button class="arsenal-tab flex-1 py-2 px-4 rounded-md transition-colors" data-tab="alchemists">Software Alchemists</button>
+                        <button class="arsenal-tab flex-1 py-2 px-4 rounded-md transition-colors" data-tab="vanguards">Digital Vanguards</button>
+                    </div>
+                    <div id="arsenal-content" class="bg-white p-6 sm:p-8 rounded-lg border border-slate-200 shadow-md">
+                        <div class="tab-pane" id="sentinel">
+                            <h3 class="font-orbitron text-xl font-bold text-cyan-600 mb-2">Sentinel Hardware</h3>
+                            <p class="text-slate-600">Forget fragile glass slabs. Our devices are AI-powered, cybernetically-enhanced extensions of your will. Each unit is a fortress, built with next-generation, proactive cybersecurity that doesn't just react to threats, it <span class="font-semibold text-slate-800">anticipates</span> them. Think of it as your personal black ice, impenetrable and intelligent, guarding your digital soul.</p>
+                        </div>
+                        <div class="tab-pane hidden" id="alchemists">
+                            <h3 class="font-orbitron text-xl font-bold text-cyan-600 mb-2">Software Alchemists</h3>
+                            <p class="text-slate-600">Our software division crafts bespoke applications that are as secure as they are revolutionary. From fortified communication suites to encrypted data vaults, every line of code is a brick in your digital fortress. We build software that works for you, and only for you, shielded from the jackals of the digital frontier.</p>
+                        </div>
+                        <div class="tab-pane hidden" id="vanguards">
+                            <h3 class="font-orbitron text-xl font-bold text-cyan-600 mb-2">Digital Vanguards</h3>
+                            <p class="text-slate-600">In the neon-drenched battlefield of the modern market, attention is currency. Our digital marketing vanguards don't just sell products; they weave narratives, build empires in the digital consciousness, and ensure your signal cuts through the noise with surgical precision. We make sure your message is not just heard, but felt.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 4: Target Sectors -->
+            <section id="sectors" class="py-12 lg:py-20 section-fade-in">
+                <h2 class="font-orbitron text-3xl font-bold text-center text-slate-900 mb-12">Target Sectors</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                    <div class="bg-white p-8 rounded-lg border border-slate-200 shadow-md text-center">
+                        <span class="text-4xl">👤</span>
+                        <h3 class="font-orbitron text-xl font-bold mt-4 mb-2 text-slate-800">For The Individual</h3>
+                        <p class="font-semibold text-pink-600">The Edgerunner & The Netizen</p>
+                        <p class="text-slate-600 mt-2">This isn't just a phone; it's your key to the city, your console to the datascape. Navigate the global network with the confidence that you hold the keys to your own digital kingdom.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-lg border border-slate-200 shadow-md text-center">
+                        <span class="text-4xl">🏢</span>
+                        <h3 class="font-orbitron text-xl font-bold mt-4 mb-2 text-slate-800">For The Corporation</h3>
+                        <p class="font-semibold text-cyan-600">The New Zaibatsus</p>
+                        <p class="text-slate-600 mt-2">In an age of information warfare, data integrity is paramount. Our enterprise solutions offer unparalleled security and a mobile ecosystem to keep your operations shielded and sovereign.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 5: Billboard Gallery -->
+            <section id="gallery" class="py-12 lg:py-20 section-fade-in">
+                <h2 class="font-orbitron text-3xl font-bold text-center text-slate-900 mb-12">Gallery: Signals in the Static</h2>
+                <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                </div>
+            </section>
+            
+            <!-- Section 6: Our Ethos & CTA -->
+            <section id="ethos" class="py-20 lg:py-32 section-fade-in text-center max-w-3xl mx-auto">
+                <h2 class="font-orbitron text-3xl font-bold text-slate-900">Our Ethos</h2>
+                 <p class="text-lg text-slate-700 mt-4">This isn't about retro-futurism. It's about the raw, untamed potential of technology, harnessed and secured. It's about the stark beauty of the interface between human and machine. Our designs are bold, angular, with a touch of neon and chrome – reflecting the resilience and sophistication of our tech.</p>
+                <p class="mt-8 text-2xl font-bold text-slate-800">Join us.</p>
+                <p class="font-orbitron text-4xl font-bold mt-2">
+                    <span class="text-cyan-500">Build It.</span>
+                    <span class="text-pink-600">Secure It.</span>
+                    <span class="text-purple-600">Dominate It.</span>
+                </p>
+                <p class="mt-8 text-slate-500">- Dimitris & Julianne Sawyer, Founders</p>
+            </section>
+
+        </main>
     </div>
+
+    <!-- Modal Structure -->
+    <div id="modal-backdrop" class="fixed inset-0 bg-black bg-opacity-70 z-50 hidden flex items-center justify-center p-4">
+        <div id="modal-content" class="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-8 relative">
+            <button id="modal-close-btn" class="absolute top-4 right-4 text-slate-500 hover:text-slate-900 text-3xl leading-none">&times;</button>
+            <h3 id="modal-title" class="font-orbitron text-2xl font-bold text-slate-900 mb-4"></h3>
+            <div id="modal-body" class="space-y-4">
+                <div>
+                    <h4 class="font-semibold text-cyan-600">Visual</h4>
+                    <p id="modal-visual" class="text-slate-600"></p>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-pink-600">Vibe</h4>
+                    <p id="modal-vibe" class="text-slate-600"></p>
+                </div>
+                <div class="border-t border-slate-200 pt-4 mt-4">
+                    <h4 class="font-semibold text-purple-600">✨ AI Augmentation</h4>
+                    <p class="text-sm text-slate-500 mb-3">Let our AI generate alternative headlines for this concept.</p>
+                    <button id="generate-headlines-btn" class="bg-purple-600 text-white font-bold py-2 px-4 rounded-md hover:bg-purple-700 transition-colors flex items-center gap-2 disabled:opacity-50">
+                        Generate Headlines ✨
+                    </button>
+                    <div id="headlines-output" class="mt-4 space-y-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- DATA ---
+        const billboardConcepts = [
+            { title: "The Sentinel's Gaze", headline: "YOUR GHOST. THEIR MACHINE.", visual: "A close-up, artistic shot of a sleek, angular Cyber Digits phone. The screen subtly glows with intricate, abstract security patterns (like a complex digital iris or a flowing shield). The background is a dark, rain-slicked cyberpunk cityscape.", vibe: "Mysterious, powerful, implies ultimate security and control." },
+            { title: "Neon Arteries", headline: "CONNECT. CONTROL. CONQUER.", visual: "An abstract representation of data streams, like neon light trails, flowing into and out of a stylized silhouette of a human head. At the center is the glowing Cyber Digits logo.", vibe: "Dynamic, high-tech, emphasizes empowerment through secure connection." },
+            { title: "The Unseen Shield", headline: "IN A WORLD OF NOISE, WE ARE YOUR SILENCE.", visual: "A split image: one half shows a chaotic, glitchy, data-storm (reds, oranges); the other half is perfectly clean and ordered (cool blues), protected by a faintly visible, glowing geometric shield.", vibe: "Reassuring, highlights protection against chaos, sophisticated defense." },
+            { title: "City of Chrome & Code", headline: "THE FUTURE IS CYBER DIGITS.", visual: "A stunning, wide shot of a futuristic cyberpunk megalopolis at night. A massive holographic Cyber Digits logo hovers between skyscrapers.", vibe: "Ambitious, dominant, positions Cyber Digits as foundational." },
+            { title: "The Glitch & The Guardian", headline: "REALITY ISN'T BROKEN. YOUR CONNECTION IS.", visual: "A visually 'glitching' background being 'repaired' by a sharp, clean, glowing Cyber Digits phone held by a silhouetted, cybernetic-looking hand.", vibe: "Edgy, problem/solution focused, implies their tech fixes digital flaws." },
+            { title: "Founders' Vision", headline: "ARCHITECTS OF TOMORROW.", visual: "A stylized portrait of the founders, Dimitris & Julianne Sawyer, overlaid with faint, glowing lines of code and network diagrams. Their gaze is focused and determined.", vibe: "Visionary, trustworthy, highlights the human element behind the tech." }
+        ];
+
+        let currentConceptInModal = null;
+
+        // --- Intersection Observer for fade-in animations ---
+        const sections = document.querySelectorAll('.section-fade-in');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        sections.forEach(section => observer.observe(section));
+
+        // --- Arsenal Tabs Logic ---
+        const tabs = document.querySelectorAll('.arsenal-tab');
+        const panes = document.querySelectorAll('#arsenal-content .tab-pane');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('tab-active'));
+                tab.classList.add('tab-active');
+
+                panes.forEach(pane => {
+                    pane.classList.add('hidden');
+                });
+                const activePane = document.getElementById(tab.dataset.tab);
+                if(activePane) activePane.classList.remove('hidden');
+            });
+        });
+        
+        // --- Gallery & Modal Logic ---
+        const galleryGrid = document.getElementById('gallery-grid');
+        const modalBackdrop = document.getElementById('modal-backdrop');
+        const modalCloseBtn = document.getElementById('modal-close-btn');
+        const modalTitle = document.getElementById('modal-title');
+        const modalVisual = document.getElementById('modal-visual');
+        const modalVibe = document.getElementById('modal-vibe');
+        const generateBtn = document.getElementById('generate-headlines-btn');
+        const headlinesOutput = document.getElementById('headlines-output');
+
+        billboardConcepts.forEach((concept) => {
+            const card = document.createElement('div');
+            card.className = 'gallery-card bg-white p-6 rounded-lg border border-slate-200 shadow-md hover:shadow-lg hover:border-cyan-400 transition-all cursor-pointer transform hover:-translate-y-1';
+            card.innerHTML = `
+                <h3 class="font-orbitron font-bold text-lg text-slate-800">${concept.title}</h3>
+                <p class="text-cyan-600 font-semibold mt-2 break-words">"${concept.headline}"</p>
+                <p class="text-sm text-slate-500 mt-4">Click to see details</p>
+            `;
+            card.addEventListener('click', () => openModal(concept));
+            galleryGrid.appendChild(card);
+        });
+
+        function openModal(concept) {
+            currentConceptInModal = concept;
+            modalTitle.textContent = concept.headline;
+            modalVisual.textContent = concept.visual;
+            modalVibe.textContent = concept.vibe;
+            modalBackdrop.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modalBackdrop.classList.add('hidden');
+            document.body.style.overflow = '';
+            headlinesOutput.innerHTML = '';
+            generateBtn.disabled = false;
+            currentConceptInModal = null;
+        }
+        
+        // --- Gemini API Logic ---
+        async function handleGenerateHeadlines() {
+            if (!currentConceptInModal) return;
+
+            headlinesOutput.innerHTML = '<div class="flex items-center gap-2 text-slate-500"><div class="spinner"></div><span>Generating...</span></div>';
+            generateBtn.disabled = true;
+
+            const concept = currentConceptInModal;
+            const prompt = `You are a creative director for a cyberpunk ad agency. Given the following concept, generate exactly 3 alternative, punchy headlines. Keep them short and in ALL CAPS. Provide only the new headlines, each on a new line. Do not include any other text or numbering.
+
+Concept Title: "${concept.title}"
+Vibe: "${concept.vibe}"
+Original Headline: "${concept.headline}"
+
+New Headlines:`;
+            
+            const apiKey = ""; 
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status}`);
+                }
+                const result = await response.json();
+                
+                const generatedText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (generatedText) {
+                    const newHeadlines = generatedText.split('\n').filter(h => h.trim() !== '');
+                    headlinesOutput.innerHTML = '';
+                    newHeadlines.forEach(h => {
+                        const p = document.createElement('p');
+                        p.className = 'bg-slate-100 p-2 rounded-md text-slate-700 font-semibold';
+                        p.textContent = `"${h.trim()}"`;
+                        headlinesOutput.appendChild(p);
+                    });
+                } else {
+                    throw new Error('No content returned from AI.');
+                }
+
+            } catch (error) {
+                console.error("Gemini API call failed:", error);
+                headlinesOutput.innerHTML = `<p class="text-red-500">Error generating headlines. Please try again.</p>`;
+            } finally {
+                generateBtn.disabled = false; // Re-enable button unless we want one-shot
+            }
+        }
+
+        generateBtn.addEventListener('click', handleGenerateHeadlines);
+        modalCloseBtn.addEventListener('click', closeModal);
+        modalBackdrop.addEventListener('click', (e) => {
+            if (e.target === modalBackdrop) {
+                closeModal();
+            }
+        });
+    });
+</script>
 </body>
 </html>
-
